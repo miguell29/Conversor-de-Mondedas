@@ -16,7 +16,7 @@ public class ApiExchange {
     private final Gson gson;
     private final Dotenv dotenv;
     private final String url_base = "https://v6.exchangerate-api.com/v6/";
-    private final String query = "/latest/USD";
+    private final String query = "/latest/";
 
 
     public ApiExchange()
@@ -25,9 +25,9 @@ public class ApiExchange {
         this.gson = new Gson();
         this.dotenv = Dotenv.load();
     }
-    public DataExchange GetData()
+    public DataExchange GetData(String q)
     {
-        String url = url_base + dotenv.get("API_KEY") + query;
+        String url = url_base + dotenv.get("API_KEY") + query + q;
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
         try {
             HttpResponse<String> response;
