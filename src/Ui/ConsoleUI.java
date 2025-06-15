@@ -1,6 +1,7 @@
 package Ui;
 
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -75,6 +76,14 @@ public class ConsoleUI {
     public void esperarParaContinuar() {
         System.out.println("Presiona Enter para continuar...");
         scanner.nextLine();
+    }
+
+    public void mostrarListaMonedas(String titulo, Map<String, String> monedas) {
+        System.out.println("\n" + titulo);
+        System.out.println("--------------------");
+        for (Map.Entry<String, String> entry : monedas.entrySet()) {
+            System.out.printf("  %s - %s\n", entry.getKey(), entry.getValue());
+        }
     }
 }
 

@@ -1,3 +1,4 @@
+import Helpers.MonedaHelper;
 import Service.ApiExchange;
 import Ui.ConsoleUI;
 
@@ -15,13 +16,14 @@ public class ConverterApp {
     public void Init(){
         String[] opciones = {"Realizar Conversión", "Ayuda de Monedas", "Salir"};
         boolean continuar = true;
+
         while (continuar) {
 
             int seleccion = this.consola.mostrarMenu("Conversor de Modedas Alura", opciones);
 
             switch (seleccion) {
                 case 1 -> realizarConversion();
-                case 2 -> System.out.println("mostrar ayuda");
+                case 2 -> MonedaHelper.mostrarAyuda(consola);
                 case 3 -> {
                     continuar = false;
                     System.out.println("saliendo...");
@@ -41,7 +43,7 @@ public class ConverterApp {
         System.out.println("\nConsultando tasas de cambio, por favor espera...");
 
         var data = api.GetData(monedaOrigen);
-        if (data.result() == "success"){
+        if (data.error() == null){
             Double tasaDeCambio = data.conversionRates().get(monedaDestino);
             if (tasaDeCambio != null) {
                 double montoDestino = montoOrigen * tasaDeCambio;
