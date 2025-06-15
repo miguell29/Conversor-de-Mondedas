@@ -22,30 +22,40 @@ public class ConverterApp {
             switch (seleccion) {
                 case 1 -> realizarConversion();
                 case 2 -> System.out.println("mostrar ayuda");
-                case 3 -> continuar = false;
+                case 3 -> {
+                    continuar = false;
+                    System.out.println("saliendo...");
+                    }
             }
         }
     }
 
     private void realizarConversion() {
+
         this.consola.mostrarTitulo("Realizar Conversion");
 
         String monedaOrigen = this.consola.leerCodigoMoneda("Introduce el código de la moneda de origen (ej. USD):");
         String monedaDestino =this.consola.leerCodigoMoneda("Introduce el código de la moneda de destino (ej. EUR):");
         Double montoOrigen = this.consola.leerDouble("Introduce la cantidad a convertir");
 
+        System.out.println("\nConsultando tasas de cambio, por favor espera...");
+
         var data = api.GetData(monedaOrigen);
-        if (data != null){
-            Double valorCambio = data.conversionRates().get(monedaDestino);
-            if (valorCambio != null) {
-                double montoDestino = montoOrigen * valorCambio;
+        if (data.result() == "success"){
+            Double tasaDeCambio = data.conversionRates().get(monedaDestino);
+            if (tasaDeCambio != null) {
+                double montoDestino = montoOrigen * tasaDeCambio;
                 String resultado = String.format(Locale.US, "%.2f %s equivale a %.2f %s",
                         montoOrigen, monedaOrigen, montoDestino, monedaDestino);
-                System.out.println(resultado);
+                this.consola.mostrarResultado(resultado);
             } else {
                 System.out.println("ERROR --> El código de moneda de destino '" + monedaDestino + "' no fue encontrado en la respuesta.");
             }
+        }else {
+            this.consola.mostrarError("No se pudieron obtener las tasas de cambio");
+            System.out.println("\ttype-error:" + data.error() + "\n\n") ;
         }
+        this.consola.esperarParaContinuar();
     }
 
 }

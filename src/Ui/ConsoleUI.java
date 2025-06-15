@@ -62,5 +62,19 @@ public class ConsoleUI {
         }
     }
 
+    public void mostrarResultado(String resultado) {
+        System.out.println("\n*****************************************");
+        System.out.println("   RESULTADO: " + resultado);
+        System.out.println("*****************************************\n");
+    }
+
+    public void mostrarError(String error) {
+        System.out.println("\n!!! ERROR: " + error + " !!!\n");
+    }
+
+    public void esperarParaContinuar() {
+        System.out.println("Presiona Enter para continuar...");
+        scanner.nextLine();
+    }
 }
 
