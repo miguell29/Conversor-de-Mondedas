@@ -1,15 +1,15 @@
 import Service.ApiExchange;
+import Ui.ConsoleUI;
 
 import java.util.Locale;
-import java.util.Scanner;
 
 public class ConverterApp {
-private ApiExchange api;
-private Scanner scanner;
+    private final ConsoleUI consola;
+    private final ApiExchange api;
 
     public ConverterApp(){
         this.api = new ApiExchange();
-        this.scanner = new Scanner(System.in);
+        this.consola = new ConsoleUI();
     }
 
     public void Init(){
@@ -17,8 +17,7 @@ private Scanner scanner;
         boolean continuar = true;
         while (continuar) {
 
-            this.mostrarMenu("Conversor de Moneda Alura", opciones);
-            int seleccion =Integer.parseInt(scanner.nextLine());
+            int seleccion = this.consola.mostrarMenu("Conversor de Modedas Alura", opciones);
 
             switch (seleccion) {
                 case 1 -> realizarConversion();
@@ -29,37 +28,24 @@ private Scanner scanner;
     }
 
     private void realizarConversion() {
-        String origen, destino;
-        Double monto;
-        System.out.println("\n--- " + "Realizar Conversion" + " ---\n");
-        System.out.print("Introduce el codigo de la moneda de origen ");
-        origen = scanner.nextLine().toUpperCase();
-        System.out.print("Introduce el codigo de la moneda de destino");
-        destino = scanner.nextLine().toUpperCase();
-        System.out.print("Introduce la cantidad a convertir");
-        monto = Double.parseDouble(scanner.nextLine());
+        this.consola.mostrarTitulo("Realizar Conversion");
 
-        var data = api.GetData(origen);
+        String monedaOrigen = this.consola.leerCodigoMoneda("Introduce el código de la moneda de origen (ej. USD):");
+        String monedaDestino =this.consola.leerCodigoMoneda("Introduce el código de la moneda de destino (ej. EUR):");
+        Double montoOrigen = this.consola.leerDouble("Introduce la cantidad a convertir");
+
+        var data = api.GetData(monedaOrigen);
         if (data != null){
-            Double targetRate = data.conversionRates().get(destino);
-            if (targetRate != null) {
-                double convertedAmount = monto * targetRate;
+            Double valorCambio = data.conversionRates().get(monedaDestino);
+            if (valorCambio != null) {
+                double montoDestino = montoOrigen * valorCambio;
                 String resultado = String.format(Locale.US, "%.2f %s equivale a %.2f %s",
-                        monto, origen, convertedAmount, destino);
+                        montoOrigen, monedaOrigen, montoDestino, monedaDestino);
                 System.out.println(resultado);
             } else {
-                System.out.println("ERROR --> El código de moneda de destino '" + destino + "' no fue encontrado en la respuesta.");
+                System.out.println("ERROR --> El código de moneda de destino '" + monedaDestino + "' no fue encontrado en la respuesta.");
             }
         }
     }
 
-    public void mostrarMenu(String titulo, String[] opciones){
-        System.out.println("=========================================");
-        System.out.println("     " + titulo);
-        System.out.println("=========================================");
-        for (int i = 0; i < opciones.length; i++) {
-            System.out.printf("%d. %s\n", i + 1, opciones[i]);
-        }
-        System.out.println("-----------------------------------------");
-    }
 }
